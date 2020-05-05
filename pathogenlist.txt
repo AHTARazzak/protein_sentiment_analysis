@@ -1,0 +1,46 @@
+Corona
+Ebola
+Rabies
+HIV
+monkeypox
+meningitis
+malaria
+Lassa Fever
+Tularaemia
+Nipah
+cholera
+Borreliosis
+Melioidosis
+Legionellosis
+smallpox
+hantavirus
+influenza
+dengue
+rotavirus
+SARS
+MERS
+Acinetobacter bumannii
+Pseudomonas aeruginosa
+Enterobacteriaceae
+Klebsiella pneumonia
+Escherichia coli
+Enterobacter spp
+serratia spp
+proteus spp
+providencia spp
+morganella spp
+Enterococcus faecium
+staphylococcus aureus
+helicobacter pylori
+campylobacter spp
+salmonellae
+neisseria gonorrhoeae
+streptococcus pneumoniae
+streptococcus aureus
+haemophilus influenzae
+shigella spp
+tuberculosis
+candida auris
+clostridioides difficile
+neisseria gonorrhoeae
+
