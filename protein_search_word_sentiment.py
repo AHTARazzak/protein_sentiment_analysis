@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 from requests_html import HTMLSession
 import urllib.request, urllib.error, urllib.parse
 import webbrowser
@@ -20,19 +14,17 @@ import shutil
 import pandas as pd
 from statistics import mean 
 import os
+import sys
 
+dlfilepath=str(sys.argv[1])
+scriptpath=str(sys.argv[2])
 
-# In[2]:
-
-
+#Read in sentiment analysis data
 sentimentana=pd.read_csv("sentiment-words-DFE-785960.csv")
 positivesentiment=sentimentana[['q1_identify_the_term_that_is_associated_with_the_most_amount_of_positive_sentiment_or_least_amount_of_negative_sentiment','q1_identify_the_term_that_is_associated_with_the_most_amount_of_positive_sentiment_or_least_amount_of_negative_sentiment:confidence']]
 negativesentiment=sentimentana[['q2_identify_the_term_that_is_associated_with_the_most_amount_of_negative_sentiment_or_least_amount_of_positive_sentiment','q2_identify_the_term_that_is_associated_with_the_most_amount_of_negative_sentiment_or_least_amount_of_positive_sentiment:confidence']]
 
-
-# In[3]:
-
-
+#Make list of english words.
 wordlist=[]
 words = set(x for x in open("words.txt").readlines())
 for i in words:
@@ -41,11 +33,8 @@ for i in words:
         if strpi.isalnum():
             if len(i)>1:
                 wordlist.append(strpi)
-
-
-# In[4]:
-
-
+				
+#Read pathogen list
 withpatho=[]
 with open("pathogenlist.txt") as dis:
     for line in dis:
@@ -53,18 +42,14 @@ with open("pathogenlist.txt") as dis:
             wordtrim=line.strip()
             searchword=wordtrim.replace(" ","%20")
             withpatho.append(searchword)
-print(withpatho)
-
-
-# In[5]:
-
 
 for qpatho in withpatho:
     pathogen=qpatho
     path = os.path.join(os.getcwd(), pathogen) 
     os.mkdir(path) 
+    #url path for protein data base search engine
     url = 'https://www.rcsb.org/search?request=%7B%22query%22%3A%7B%22parameters%22%3A%7B%22value%22%3A%22'+pathogen+'%22%7D%2C%22type%22%3A%22terminal%22%2C%22service%22%3A%22text%22%2C%22node_id%22%3A0%7D%2C%22return_type%22%3A%22entry%22%2C%22request_options%22%3A%7B%22pager%22%3A%7B%22start%22%3A0%2C%22rows%22%3A100%7D%2C%22scoring_strategy%22%3A%22combined%22%2C%22sort%22%3A%5B%7B%22sort_by%22%3A%22score%22%2C%22direction%22%3A%22desc%22%7D%5D%7D%2C%22request_info%22%3A%7B%22src%22%3A%22ui%22%2C%22query_id%22%3A%224fd19d7ad36839f52b83a7f42c4a6437%22%7D%7D'
-    #note 1
+    #note 1, double check chrome exectuable path
 	chrome_path = '/usr/bin/google-chrome %s'
     webbrowser.get(chrome_path).open(url)
     time.sleep(5)
@@ -73,9 +58,8 @@ for qpatho in withpatho:
     pyautogui.typewrite(pathogen+"page")
     pyautogui.hotkey('enter')
     time.sleep(8)
-	#note 2
-    dlpath = '/home/a/Downloads/'
-    shutil.move(dlpath+'/'+pathogen+"page.html", path+'/'+pathogen+"page.html")
+    shutil.move(dlfilepath+"/"+pathogen+"page.html", path+"/"+pathogen+"page.html")
+    f= open(scriptpath+'/'+pathogen+"/"+pathogen+"page.html", "r")
     f= open(path+"/"+pathogen+"page.html", "r")
     soup = BeautifulSoup(f, 'lxml')
     pdblinks=soup.find_all("a", href=True)
@@ -99,10 +83,10 @@ for qpatho in withpatho:
     for i in onlypdb:
         webbrowser.get(chrome_path).open('https://www.rcsb.org/fasta/entry/'+str(i))
         time.sleep(2)
-        shutil.move(dlpath+"rcsb_pdb_"+str(i)+".fasta", path+"/rcsb_pdb_"+str(i)+".fasta")
+        shutil.move(dlfilepath+"/rcsb_pdb_"+str(i)+".fasta", path+"/rcsb_pdb_"+str(i)+".fasta")
     for i in onlypdb:   
         pdb=i
-        p= open(path+'/rcsb_pdb_'+pdb+".fasta", "r")
+        p= open(path+"/rcsb_pdb_"+str(i)+".fasta", "r")
         linecount=0
         for line in p:
             if ">" not in line:
@@ -137,4 +121,3 @@ for qpatho in withpatho:
         f.close()
         path = os.path.join(os.getcwd(), pathogen) 
         shutil.move(os.getcwd()+"/"+thescorefile, path+"/"+thescorefile)
-
